@@ -158,9 +158,7 @@ img::selection {
 
 .disabled-house-image-container {
   position: absolute;
-
   transform: translate(-50%, -50%);
-
   height: auto;
   cursor: pointer;
   transform-origin: center;
@@ -306,4 +304,130 @@ img::selection {
     width: 50px;
     height: 50px;
   }
+
+  .unlottie-box {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.unlock-house-image-container {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  height: auto;
+  cursor: pointer;
+  transform-origin: center;
+  transition: all 0.2s ease;
+}
+
+.unlock-house-image-container:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.unlock-house-image-container:active {
+  filter: brightness(90%);
+}
+
+.unlock-house-image-container img {
+  width: 100%;
+  height: auto;
+  filter: brightness(50%);
+  transition: filter 0.5s ease;
+  /* Smooth transition for the brightness */
+}
+
+.unlottie-box {
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  flex-shrink: 0;
+}
+
+@keyframes jumpShake {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+
+  25% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+
+  50% {
+    transform: translateY(0) rotate(-2deg);
+  }
+
+  75% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+}
+
+.unlock-house-image-container img {
+  animation: jumpShake 1.5s infinite ease;
+  transform-origin: center;
+}
+
+/* Shake and scale animation when unlocking */
+@keyframes shakeAndScale {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  10% {
+    transform: translate(-50%, -50%) scale(0.99) rotate(5deg);
+    /* Quick shake and slightly scale down */
+  }
+
+  20% {
+    transform: translate(-50%, -50%) scale(0.98) rotate(-5deg);
+    /* Quick shake */
+  }
+
+  30% {
+    transform: translate(-50%, -50%) scale(0.97) rotate(4deg);
+    /* Continue quick shake */
+  }
+
+  40% {
+    transform: translate(-50%, -50%) scale(0.96) rotate(-4deg);
+    /* Continue shake */
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(0.95) rotate(3deg);
+    /* Slow down the shake, smaller */
+  }
+
+  60% {
+    transform: translate(-50%, -50%) scale(0.96) rotate(-2deg);
+    /* Begin pop back */
+  }
+
+  70% {
+    transform: translate(-50%, -50%) scale(0.97) rotate(1deg);
+    /* Slowly expand back */
+  }
+
+  80% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    /* Almost back */
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    /* Fully back to original size */
+  }
+}
+
+.unlock-house-image-container.shaking {
+  animation: shakeAndScale 1s ease-in-out;
+  /* Apply the shake & scale effect over 2 seconds */
+}
+
+/* Apply drop-shadow only after unlocking and hovering */
+.unlock-house-image-container:hover {
+  filter: brightness(100%) drop-shadow(0 0 15px rgba(63, 255, 30, 0.8));
+  /* Green glow effect */
 }

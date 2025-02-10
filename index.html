@@ -7,28 +7,27 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="index, follow">
-    <meta name="title" content="Sprout Citizens"> <!-- Change the title -->
-    <meta name="description" content="Enter the garden now!"> <!-- Change the describtion -->
-    <meta name="keywords"
-      content="Sprout, Citizens, Sprout Citizens">
+  <meta name="title" content="Sprout Citizens">
+  <meta name="description" content="Enter the garden now!">
+  <meta name="keywords" content="Sprout, Citizens, Sprout Citizens">
 
-    <meta property="og:title" content="Sprout Citizens"> <!-- Change the title -->
-    <meta property="og:description" content="Enter the garden now!"> <!-- Change the describtion -->
-    <meta property="og:image" content="https://citizens.sproutmarketing.xyz/images/link-img.png"> <!-- Change the image link -->
-    <meta property="og:url" content="https://augustas.co"> <!-- Change the domain -->
+  <meta property="og:title" content="Sprout Citizens">
+  <meta property="og:description" content="Enter the garden now!">
+  <meta property="og:image" content="https://citizens.sproutmarketing.xyz/images/link-img.png">
+  <meta property="og:url" content="https://augustas.co">
 
-    <meta name="twitter:title" content="Sprout Citizens"> <!-- Change the title -->
-    <meta name="twitter:description" content="Enter the garden now!"> <!-- Change the describtion -->
-    <meta name="twitter:card" content="https://citizens.sproutmarketing.xyz/images/link-img.png"> <!-- Change the image link -->
-    <meta name="twitter:image" content="https://citizens.sproutmarketing.xyz/images/link-img.png"> <!-- Change the image link -->
+  <meta name="twitter:title" content="Sprout Citizens">
+  <meta name="twitter:description" content="Enter the garden now!">
+  <meta name="twitter:card" content="https://citizens.sproutmarketing.xyz/images/link-img.png">
+  <meta name="twitter:image" content="https://citizens.sproutmarketing.xyz/images/link-img.png">
 
-    <meta name="author" content="AWeb">
-    <meta name="theme-color" content="#000000">
+  <meta name="author" content="AWeb">
+  <meta name="theme-color" content="#000000">
 
-    <link rel="alternate" href="https://citizens.sproutmarketing.xyz" hreflang="en"> <!-- Change the domain -->
+  <link rel="alternate" href="https://citizens.sproutmarketing.xyz" hreflang="en">
 
-  <title>Sprout Citizens</title> <!-- Change the title -->
-  <link rel="canonical" href="https://citizens.sproutmarketing.xyz"> <!-- Change the domain -->
+  <title>Sprout Citizens</title>
+  <link rel="canonical" href="https://citizens.sproutmarketing.xyz">
   <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 
   <link rel="stylesheet" href="styles.css">
@@ -42,7 +41,6 @@
   <div class="welcome-screen" onclick="closeWelcomeScreen()">
 
     <p>Click anywhere to enter!</p>
-
 
   </div>
 
@@ -96,13 +94,13 @@
         </div>
       </div>
 
-      <div class="disabled-house-image-container cyan" onclick="playLottie(this)">
+      <div class="unlock-house-image-container cyan" onclick="playLottie(this)">
         <img src="images/cyan.webp" alt="house">
-        <div class="lock-lottie-container">
+        <div class="unlock-lottie-container">
           <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
             type="module"></script>
-          <dotlottie-player class="lottie-box cyan-lock"
-            src="https://lottie.host/43e64774-d956-4e71-994a-ecf447673795/MXCZTO7exS.lottie" background="transparent"
+          <dotlottie-player class="unlottie-box cyan-lock"
+            src="https://lottie.host/4e65622d-0f63-4f4e-897a-e6d1da9678e2/KtUYzyk9iU.lottie" background="transparent"
             speed="1"></dotlottie-player>
         </div>
       </div>
@@ -159,6 +157,56 @@
 
 
   <script>
+
+    let unlocked = false; // Track if the house is unlocked
+    const unlockSound = new Audio("unlock-sound.mp3"); // Sound file
+
+    function handleUnlock(event) {
+      const element = event.currentTarget;  // Get the clicked element
+      const img = element.querySelector("img");  // Get the image inside the clicked container
+      const lottie = element.querySelector("dotlottie-player");  // Get the Lottie player inside the clicked container
+
+      if (!unlocked) {
+        // Stop the jumpShake animation
+        img.style.animation = "none";
+
+        // Play the Lottie animation once
+        lottie.play();
+
+        // Play the sound effect
+        unlockSound.play();
+
+        // Change the brightness of the image to 100%
+        img.style.filter = "brightness(90%)";
+
+        // Add shaking and scaling effect
+        element.classList.add("shaking");
+
+        // Mark it as unlocked when the Lottie animation completes
+        lottie.addEventListener("complete", () => {
+          unlocked = true;
+          // Add the 'unlocked' class to the image after unlocking
+          img.classList.add("unlocked");
+          // Remove the shaking class after the animation ends (optional)
+          element.classList.remove("shaking");
+        });
+      } else {
+        // Redirect to another page once unlocked
+        window.location.href = "https://your-custom-link.com"; // Replace with your target link
+      }
+    }
+
+    // Attach the click event listener to all clickable elements
+    document.querySelectorAll('.unlock-house-image-container').forEach(item => {
+      item.addEventListener('click', handleUnlock);
+    });
+
+
+
+
+
+
+
 
     document.addEventListener("visibilitychange", () => {
       document.hidden ? audio.pause() : !isMuted && audio.play();
