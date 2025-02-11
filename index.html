@@ -155,10 +155,14 @@
 
   <audio id="lockSound" src="music/locked.MP3" preload="auto"></audio>
 
+  <audio id="unlock-sound">
+    <source src="music/unlock.MP3" type="audio/mpeg">
+  </audio>
+
 
   <script>
 let unlocked = false;
-const unlockSound = new Audio("/music/unlock.mp3");
+const unlockSound = document.getElementById("unlock-sound");;
 
 function handleUnlock(event) {
   const element = event.currentTarget;
