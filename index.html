@@ -54,7 +54,7 @@
 
 
       <a href="https://x.com/SproutCitizens" target="_blank">
-        <div class="house-image-container x-house">
+        <div class="house-image-container x-house" style="z-index: 99;">
           <img src="images/x-house.webp" alt="house">
         </div>
       </a>
@@ -93,7 +93,7 @@
         </div>
       </div>
 
-      <div class="unlock-house-image-container cyan">
+      <div class="unlock-house-image-container cyan" id="unlock-1">
         <img src="images/cyan.webp" alt="house">
         <div class="unlock-lottie-container">
           <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
@@ -104,13 +104,13 @@
         </div>
       </div>
 
-      <div class="disabled-house-image-container rocket" onclick="playLottie(this)">
+      <div class="unlock-house-image-container rocket" id="unlock-2">
         <img src="images/rocket.webp" alt="house">
-        <div class="lock-lottie-container">
+        <div class="unlock-lottie-container">
           <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
             type="module"></script>
-          <dotlottie-player class="lottie-box rocket-lock"
-            src="https://lottie.host/43e64774-d956-4e71-994a-ecf447673795/MXCZTO7exS.lottie" background="transparent"
+          <dotlottie-player class="unlottie-box rocket-lock"
+            src="https://lottie.host/4e65622d-0f63-4f4e-897a-e6d1da9678e2/KtUYzyk9iU.lottie" background="transparent"
             speed="1"></dotlottie-player>
         </div>
       </div>
@@ -161,33 +161,58 @@
 
 
   <script>
-let unlocked = false;
-const unlockSound = document.getElementById("unlock-sound");;
+class UnlockComponent {
+  constructor(containerId, customLink) {
+    this.unlocked = false;
+    this.container = document.getElementById(containerId);
+    this.customLink = customLink;
+    this.unlockSound = document.getElementById("unlock-sound");
+    this.img = this.container.querySelector("img");
+    this.lottie = this.container.querySelector("dotlottie-player");
 
-function handleUnlock(event) {
-  const element = event.currentTarget;
-  const img = element.querySelector("img");
-  const lottie = element.querySelector("dotlottie-player");
+    if (!this.container) console.error(`Container with ID ${containerId} not found`);
+    if (!this.img) console.error(`Image not found in container ${containerId}`);
+    if (!this.lottie) console.error(`Lottie player not found in container ${containerId}`);
+    if (!this.unlockSound) console.error('Unlock sound element not found');
 
-  if (!unlocked) {
-    img.style.animation = "none";
-    lottie.play();
-    unlockSound.play();
-    img.style.filter = "brightness(90%)";
-    element.classList.add("shaking");
+    this.initializeEventListeners();
+  }
 
-    lottie.addEventListener("complete", () => {
-      unlocked = true;
-      img.classList.add("unlocked");
-      element.classList.remove("shaking");
-    });
-  } else {
-    window.open("https://magiceden.io/collections/abstract/0x25e19d06d18fb7d0cf421af1772491ec68ef2f9b", "_blank");
+  initializeEventListeners() {
+    if (this.container) {
+      this.container.addEventListener('click', () => this.handleUnlock());
+    }
+  }
+
+  handleUnlock() {
+    if (!this.unlocked) {
+      if (this.img) this.img.style.animation = "none";
+      if (this.lottie) this.lottie.play();
+      if (this.unlockSound && !isMuted) { // Check isMuted before playing
+        this.unlockSound.currentTime = 0;
+        this.unlockSound.play().catch(error => {
+          console.error('Audio playback failed:', error);
+        });
+      }
+      if (this.img) this.img.style.filter = "brightness(90%)";
+      if (this.container) this.container.classList.add("shaking");
+
+      if (this.lottie) {
+        this.lottie.addEventListener("complete", () => {
+          this.unlocked = true;
+          if (this.img) this.img.classList.add("unlocked");
+          if (this.container) this.container.classList.remove("shaking");
+        }, { once: true });
+      }
+    } else {
+      window.open(this.customLink, "_blank");
+    }
   }
 }
 
-document.querySelectorAll('.unlock-house-image-container').forEach(item => {
-  item.addEventListener('click', handleUnlock);
+document.addEventListener('DOMContentLoaded', () => {
+  const unlock1 = new UnlockComponent("unlock-1", "https://magiceden.io/collections/abstract/0x25e19d06d18fb7d0cf421af1772491ec68ef2f9b");
+  const unlock2 = new UnlockComponent("unlock-2", "https://t.me/Plasma_Creator_Bot");
 });
 
 document.addEventListener("visibilitychange", () => {
@@ -199,7 +224,7 @@ function playLottie(element) {
   const lottie = element.querySelector('.lock-lottie-container dotlottie-player');
   const lockSound = document.getElementById('lockSound');
 
-  if (!isMuted) lockSound.play();
+  if (!isMuted && lockSound) lockSound.play();
   houseImage.classList.add('shake');
   lottie.stop();
   lottie.play();
@@ -229,7 +254,9 @@ let isMuted = localStorage.getItem('audioMuted') === 'true';
 
 function fadeAudio(targetVolume, callback) {
   let currentVolume = audio.volume;
-  const fadeTime = 300, steps = 30, volumeStep = (currentVolume - targetVolume) / steps;
+  const fadeTime = 300,
+    steps = 30,
+    volumeStep = (currentVolume - targetVolume) / steps;
   let stepCount = 0;
 
   const fadeInterval = setInterval(() => {
@@ -263,7 +290,8 @@ function playAudioOnClick() {
 
 function updateAudioIcon() {
   audioIcon.src = isMuted ? 'images/SPEAKER-1.webp' : 'images/SPEAKER-2.webp';
-  unlockSound.muted = isMuted;
+  const unlockSoundElement = document.getElementById("unlock-sound");
+  if (unlockSoundElement) unlockSoundElement.muted = isMuted;
 }
 
 audioToggle.addEventListener("click", () => {
